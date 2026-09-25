@@ -1,47 +1,67 @@
-# llms-txt-lint — ferramenta grátis e de código aberto para validar llms.txt
+**English** · [Português (Brasil)](README.pt-BR.md)
 
-`llms-txt-lint` é uma ferramenta gratuita e de código aberto que valida a
-estrutura de um arquivo `llms.txt` contra a convenção que vem se firmando
-como padrão do setor ([llmstxt.org](https://llmstxt.org)): título em H1,
-resumo curto em blockquote, seções em H2 com listas de links markdown.
+# llms-txt-lint
 
-## O que é llms.txt
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) ![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue.svg)
 
-`llms.txt` é um arquivo na raiz do site pensado para dar a um agente de IA
-um mapa direto do conteúdo, em markdown, sem o ruído de navegação e
-interface de uma página HTML normal. Como o formato ainda não é uma
-especificação única e obrigatória, arquivos reais divergem bastante — esta
-ferramenta confere a estrutura contra a convenção mais citada.
+`llms-txt-lint` is a free, open source command-line tool that validates the
+structure of an `llms.txt` file against the convention that is becoming the
+industry default ([llmstxt.org](https://llmstxt.org)): an H1 title, a short
+summary in a blockquote, and H2 sections with lists of markdown links. It
+runs locally with the Python standard library only.
 
-## O que a ferramenta verifica
+## Contents
 
-1. A primeira linha não vazia é um H1 (`# Título`).
-2. Existe um bloco de resumo em blockquote (`> ...`) logo depois do
-   título.
-3. O restante do arquivo é organizado em seções H2 (`## Nome`).
-4. Itens de lista que parecem link seguem o formato
-   `- [texto](url): descrição opcional`.
-5. Nenhum link markdown com URL vazia.
+- [Background](#background)
+- [What it checks](#what-it-checks)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Usage](#usage)
+- [FAQ](#faq)
+- [Limitations](#limitations)
+- [Contributing](#contributing)
+- [Author](#author)
+- [License](#license)
 
-## Instalação
+## Background
 
-Só biblioteca padrão do Python (3.9 ou mais recente). Sem dependência
-externa.
+`llms.txt` is a file at the site root meant to give an AI agent a direct
+map of the content, in markdown, without the navigation and interface
+noise of a normal HTML page. The format is not yet a single, mandatory
+specification, so real-world files vary a lot. This tool checks the
+structure against the most cited convention.
+
+## What it checks
+
+1. The first non-empty line is an H1 (`# Title`).
+2. A summary block in a blockquote (`> ...`) comes right after the title.
+3. The file has at least one H2 section (`## Name`).
+4. List items that look like links follow the format
+   `- [text](url): optional description`.
+5. No markdown link has an empty URL.
+
+## Requirements
+
+Python 3.9 or newer. Standard library only, no external dependencies.
+
+## Installation
 
 ```bash
-git clone https://github.com/lucasferrazseo/llms-txt-lint.git
+git clone https://github.com/LucasFerrazSEO/llms-txt-lint.git
 cd llms-txt-lint
 ```
 
-## Como usar, passo a passo
+## Usage
 
-**1. Rode contra o seu arquivo `llms.txt`.**
+The tool prints its report in Brazilian Portuguese.
+
+**1. Run it against your `llms.txt` file.**
 
 ```bash
 python llms_txt_lint.py llms.txt
 ```
 
-**2. Leia o relatório.** Exemplo real, de um `llms.txt` bem formado:
+**2. Read the report.** Real sample output from a well-formed `llms.txt`:
 
 ```
 === llms-txt-lint: llms.txt ===
@@ -54,51 +74,55 @@ OK 3 | ATENÇÃO 0
   Estrutura dentro do padrão esperado.
 ```
 
-Quando falta o blockquote de resumo, ou um item de lista parece link mas
-não bate o formato esperado, a ferramenta aponta a linha exata do
-problema.
+When a list item looks like a link but does not match the expected format,
+or a markdown link has an empty URL, the tool points to the exact line. A
+missing summary blockquote is reported as a warning without a line number.
 
-**3. Baixe o `llms.txt` de qualquer site e teste direto**, se quiser
-comparar com o seu:
+**3. Download any site's `llms.txt` and test it**, if you want to compare
+it with yours:
 
 ```bash
 curl -s https://exemplo.com/llms.txt -o llms-exemplo.txt
 python llms_txt_lint.py llms-exemplo.txt
 ```
 
-**4. Use `--strict` em CI/CD**, para bloquear publicação de um `llms.txt`
-fora do padrão:
+**4. Use `--strict` in CI/CD** to block publishing an `llms.txt` that is
+off the convention. With `--strict`, the exit code is 1 if there is any
+warning:
 
 ```bash
 python llms_txt_lint.py llms.txt --strict
 ```
 
-## Perguntas frequentes
+## FAQ
 
-**llms-txt-lint é realmente grátis?**
-Sim, código aberto sob licença MIT.
+**Is llms-txt-lint really free?**
+Yes. It is open source under the MIT license.
 
-**A ferramenta confirma se meus links funcionam?**
-Não. Confere a forma do arquivo — sintaxe markdown, estrutura de seção —
-não se os links listados existem de fato ou apontam para o lugar certo.
+**Does the tool confirm that my links work?**
+No. It checks the shape of the file (markdown syntax, section structure),
+not whether the listed links exist or point to the right place.
 
-**Meu site precisa de um llms.txt?**
-Não existe hoje uma confirmação oficial de que llms.txt afeta ranqueamento
-ou citação; é uma convenção adotada por parte do setor como sinalização
-adicional, não uma exigência documentada por nenhum provedor de IA.
+**Does my site need an llms.txt?**
+There is no official confirmation today that llms.txt affects rankings or
+citations. It is a convention adopted by part of the industry as an extra
+signal, not a requirement documented by any AI provider.
 
-## Limitações
+## Limitations
 
-Confere a forma do arquivo, não se os links listados existem de fato ou
-apontam para o lugar certo. O padrão llms.txt não é uma especificação
-formal única em 2026; esta ferramenta segue a convenção mais citada, que
-pode mudar.
+It checks the shape of the file, not whether the listed links exist or
+point to the right place. The llms.txt standard is not a single formal
+specification in 2026. This tool follows the most cited convention, which
+may change.
 
-## Autor
+## Contributing
 
-[Lucas Ferraz](https://lucasferraz.com) — especialista em SEO, criação de
-sites e SEO para IA, fundador da [Lucas Ferraz SEO](https://lucasferrazseo.com).
+Bug reports and suggestions are welcome through [GitHub Issues](https://github.com/LucasFerrazSEO/llms-txt-lint/issues).
 
-## Licença
+## Author
 
-MIT — ver [LICENSE](LICENSE).
+[Lucas Ferraz](https://lucasferraz.com) is an SEO, website development and Generative Engine Optimization specialist and the founder of [Lucas Ferraz SEO](https://lucasferrazseo.com).
+
+## License
+
+MIT. See [LICENSE](LICENSE).
